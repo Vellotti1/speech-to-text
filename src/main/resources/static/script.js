@@ -23,9 +23,39 @@ async function startRecording() {
             audioChunks.push(event.data);
         });
 
-        mediaRecorder.addEventListener("stop", () => {
+        mediaRecorder.addEventListener("stop", async () => {
             stream.getTracks().forEach(track => track.stop());
+        
+
+        const audioBlob = new Blob(audioChunks, {
+            type: mediaRecorder.mimeType
         });
+
+        await uploadAudio(audioBlob);
+        });
+
+        async function uploadAudio(audioBlob) {
+            const formData = new FormData();
+
+            formData.append("audio", audioBlob, "recording.webm");
+
+            try {
+                const response = await fetch("/api/audio", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error("Upload failure")
+                }
+
+                const message = await response.text();
+                status.textContent = message;
+            } catch(error) {
+            console.error(error);
+            status.textContent = "Failed to upload recording"
+        } 
+        }
 
         mediaRecorder.start();
 
@@ -42,5 +72,5 @@ function stopRecording() {
     mediaRecorder.stop();
 
     recordButton.textContent = "Start Recording";
-    status.textContent = "Recording Ended";
+    status.textContent = "Recording Processing";
 }
