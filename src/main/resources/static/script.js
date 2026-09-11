@@ -1,5 +1,6 @@
 const recordButton = document.getElementById("recordButton");
 const status = document.getElementById("status");
+const transcriptionText = document.getElementById("transcriptionText");
 
 let mediaRecorder;
 let audioChunks =[];
@@ -15,6 +16,7 @@ recordButton.addEventListener("click", async () => {
 async function startRecording() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        
 
         audioChunks = [];
         mediaRecorder = new MediaRecorder(stream);
@@ -50,7 +52,8 @@ async function startRecording() {
                 }
 
                 const message = await response.text();
-                status.textContent = message;
+                transcriptionText.textContent = message;
+                status.textContent = "Transcription success!";
             } catch(error) {
             console.error(error);
             status.textContent = "Failed to upload recording"
