@@ -1,6 +1,7 @@
 const recordButton = document.getElementById("recordButton");
 const status = document.getElementById("status");
 const transcriptionText = document.getElementById("transcriptionText");
+const reocrdingHistory = document.getElementById("recordingHistory");
 
 let mediaRecorder;
 let audioChunks =[];
@@ -53,6 +54,7 @@ async function startRecording() {
 
                 const message = await response.text();
                 transcriptionText.textContent = message;
+                addToHistory(nessage);
                 status.textContent = "Transcription success!";
             } catch(error) {
             console.error(error);
@@ -76,4 +78,12 @@ function stopRecording() {
 
     recordButton.textContent = "Start Recording";
     status.textContent = "Recording Processing";
+}
+
+function addToHistory(transcription) {
+    const historyItem = document.createElement("p")
+
+    historyItem.textContent = transcription;
+
+    reocrdingHistory.appendChild(historyItem);
 }
