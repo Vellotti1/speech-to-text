@@ -54,7 +54,7 @@ async function startRecording() {
 
                 const message = await response.text();
                 transcriptionText.textContent = message;
-                addToHistory(nessage);
+                addToHistory(message);
                 status.textContent = "Transcription success!";
             } catch(error) {
             console.error(error);
