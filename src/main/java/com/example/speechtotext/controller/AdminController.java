@@ -47,7 +47,7 @@ public class AdminController {
         if (isShutingdown) {
             return ResponseEntity
             .status(HttpStatus.CONFLICT)
-            .body(new ShutdownResponse("Shutdown in progress"));
+            .body(new ShutdownResponse("Graceful shutdown is already in progress."));
         }
 
         isShutingdown = true;
@@ -60,7 +60,7 @@ public class AdminController {
 
         return ResponseEntity
         .status(HttpStatus.ACCEPTED)
-        .body(new ShutdownResponse("Shutdown Requested"));
+        .body(new ShutdownResponse("Graceful shutdown requested."));
 
     }
 
