@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.speechtotext.service.StatisticsService;
 import com.openai.models.audio.transcriptions.Transcription;
+import com.openai.core.MultipartField;
+import java.io.InputStream;
 
 @Service 
 public class OpenAIService {
@@ -25,7 +27,12 @@ public class OpenAIService {
     public String transcribeAudio(MultipartFile audio) throws Exception{
 
         TranscriptionCreateParams paramiters = TranscriptionCreateParams.builder()
-        .file(audio.getBytes())
+        .file(
+            MultipartField.<InputStream>builder()
+            .value(audio.getInputStream())
+            .filename("recording.webm")
+            .build()
+        )
         .model(AudioModel.GPT_4O_MINI_TRANSCRIBE_2025_12_15)
         .build();
 
