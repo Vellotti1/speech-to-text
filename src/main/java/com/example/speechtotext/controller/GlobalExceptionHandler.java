@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
             ErrorResponse response = new ErrorResponse(
                 Instant.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "internal Server Error",
-                "Unexpected Error",
+                "Internal Server Error",
+                "An unexpected server error occurred",
                 request.getRequestURI()
             );
 
