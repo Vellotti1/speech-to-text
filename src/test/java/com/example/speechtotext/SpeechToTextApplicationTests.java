@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,6 +24,24 @@ class SpeechToTextApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Application is running"));
     }
+
+    @Test
+    void uptimeEndpointRetrunsInfo() throws Exception {
+          mockMvc.perform(get("/api/v1/admin/uptime"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.utcServerStart").exists())
+            .andExpect(jsonPath("$.utcNow").exists())
+            .andExpect(jsonPath("$.serverUptimeSeconds").exists());
+    }
+
+    @Test
+    void globalStatsEndpointReturnsTokenUsage() throws Exception {
+           mockMvc.perform(get("/api/v1/global/stats"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.inputTokens").exists())
+            .andExpect(jsonPath("$.outputTokens").exists());
+    }
+
 
 }
 
