@@ -8,14 +8,18 @@ import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
 import com.openai.models.audio.transcriptions.TranscriptionCreateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.speechtotext.service.StatisticsService;
+import com.openai.models.audio.transcriptions.Transcription;
 
 @Service 
 public class OpenAIService {
 
     private final OpenAIClient client;
+    private final StatisticsService statisticsService;
 
-    public OpenAIService() {
+    public OpenAIService(StatisticsService statisticsService) {
         this.client = OpenAIOkHttpClient.fromEnv();
+        this.statisticsService = statisticsService;
     }
 
     public String transcribeAudio(MultipartFile audio) throws Exception{
@@ -30,7 +34,23 @@ public class OpenAIService {
                 .transcriptions()
                 .create(paramiters);
 
-        return response.asTranscription().text();
+        Transcription transcription = response.asTranscription();
+
+        if (transcription.usage().isPresent()) {
+            var usage = transcription.usage().get();
+
+
+            if (usage.tokens().isPresent()) {
+                var tokens = usage.tokens().get();
+
+                statisticsService.addUsage(
+                tokens.inputTokens(),
+                tokens.outputTokens()
+            );
+            }
+
+        }
+        return transcription.text();
     }
     
 
